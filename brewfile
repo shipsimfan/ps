@@ -1,0 +1,3 @@
+name = ps
+type = executable
+languages = c
