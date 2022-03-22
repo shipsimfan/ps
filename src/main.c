@@ -3,8 +3,18 @@
 #include <stdlib.h>
 #include <string.h>
 
-int main() {
-    sid_t sid = get_session_id();
+int main(int argc, char* argv[]) {
+    sid_t sid;
+
+    if (argc == 1)
+        sid = get_session_id();
+    else if (argc == 2)
+        sid = atoi(argv[1]);
+    else {
+        fprintf(stderr, "Invalid number of arguments\n");
+        fprintf(stderr, "USAGE: %s [SESSION]\n", argv[0]);
+        exit(EXIT_FAILURE);
+    }
 
     isize num_processes = get_session_processes(sid, NULL, 0);
     if (num_processes < 0) {
@@ -13,7 +23,7 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
-    pid_t *processes = (pid_t *)malloc(sizeof(pid_t) * num_processes);
+    pid_t* processes = (pid_t*)malloc(sizeof(pid_t) * num_processes);
     num_processes = get_session_processes(sid, processes, num_processes);
     if (num_processes < 0) {
         fprintf(stderr, "Failed to get processes: %s\n",
@@ -22,9 +32,9 @@ int main() {
     }
 
     process_t info;
-    info.working_directory = (char *)malloc(sizeof(char) * 1024);
+    info.working_directory = (char*)malloc(sizeof(char) * 1024);
     info.working_directory_len = 1024;
-    info.name = (char *)malloc(sizeof(char) * 256);
+    info.name = (char*)malloc(sizeof(char) * 256);
     info.name_len = 256;
 
     for (isize i = 0; i < num_processes; i++) {
